@@ -1,0 +1,40 @@
+======================================================================
+			      * ZincBB *
+======================================================================
+
+An open-source electronic bulletin board written in Erlang, and
+powered by the Erlang Web Framework Nitrogen.
+
+ZincBB is made available under the Apache 2.0 license.
+
+
+======================================================================
+Setup
+======================================================================
+
+After cloning the repository, dependent libraries must be fetched as
+git submodule repostories. 
+
+Dependencies:
+git submodule init
+git submodule update
+
+Build: 
+make
+
+Setup (sets up mnesia schema):
+./bootstrap
+
+Run:
+./start
+
+
+======================================================================
+Source Format
+======================================================================
+
+The erl_tidy library is used to format the zincBB code used in this
+project. To apply the tidy, simply type:
+
+./zntools tidy
+

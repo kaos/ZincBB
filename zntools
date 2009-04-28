@@ -1,0 +1,19 @@
+#!/usr/bin/env escript
+
+main(["tidy"]) ->
+    tidy();
+
+main(_) ->
+    tidy().
+
+
+tidy() ->
+    io:format("Tidying source code~n", []),
+    erl_tidy:dir("./lib/zincBB/src", [
+	    {backups, false}, 
+	    {keep_unused, true},
+	    {paper, 100},
+	    {ribbon, 80},
+	    {quiet, true}
+    ]).
+

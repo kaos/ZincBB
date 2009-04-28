@@ -1,0 +1,27 @@
+#!/bin/sh
+
+### Config Params ###############################
+
+node="zincBB"
+mnesia_dir="mnesia"
+
+
+### Setup ######################################
+
+cd `dirname $0`
+rm -rf ./wwwroot/nitrogen
+ln -s ${PWD}/lib/nitrogen/www ./wwwroot/nitrogen
+
+
+### Launch #####################################
+
+echo "Starting ZincBB (Standalone)"
+
+exec erl +K true -smp enable		    \
+-sname ${node}				    \
+-mnesia dir ${mnesia_dir}		    \
+-pa ${PWD}/lib/*/ebin			    \
+-boot start_sasl -s reloader		    \
+-eval "application:start(crypto)"	    \
+-eval "application:start(znbb)"
+

@@ -1,0 +1,17 @@
+#!/usr/bin/env escript
+%%! -sname zincBB -mnesia dir '"mnesia"'
+
+
+main(_) ->
+    mnesia().
+
+
+mnesia() ->
+    mnesia:stop(),
+    filelib:ensure_dir("./mnesia"),
+    mnesia:create_schema([node()]),
+
+    ok = mnesia:start(),
+    true = code:add_path("./lib/zincBB/ebin"),
+    {module, M} = code:ensure_loaded(znbb_mnesia_db),
+    {atomic, ok} = M:create_tables().

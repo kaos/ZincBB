@@ -1,0 +1,7 @@
+.DS_Store
+TAGS
+tags
+*.beam
+*.dump
+mnesia
+wwwroot/nitrogen

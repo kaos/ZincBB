@@ -1,0 +1,226 @@
+/* @override http://localhost:8001/static/styles/global.css */
+body
+{ color: #7F7F7F;
+  background: #000 url(/static/images/tarten_tile_black.png);
+  font-family: "Lucida Grande", Lucida, Verdana, sans-serif;}
+a, a:active, a:visited
+{ color: #2D4159;
+  font-size: 14px;
+  font-family: "Lucida Grande", Lucida, Verdana, sans-serif;}
+h1
+{ color: #7D3A49;
+  font: 24px "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;}
+h4
+{ color: #011A3C;}
+/* @group Position */
+.fLeft
+{ float: left;}
+.fRight
+{ float: right;}
+.posrel
+{ position: relative;}
+.center
+{ text-align: center;}
+.aLeft
+{ text-align: left;}
+.aRight
+{ text-align: right;}
+.ltr
+{ direction: ltr;}
+.rtl
+{ direction: rtl;}
+/* @end */
+.noborder img
+{ border: 0;}
+#header
+{ background-color: #011A3C;
+  position: relative;
+  height: 4.4em;}
+#masthead
+{ padding: 4px 0 5px;
+  background-color: #D0E1F7;
+  border-bottom: 2px solid #9fb0c6;}
+#masthead h1
+{ color: #2D4159;
+  font: italic bold 30px Georgia, "Times New Roman", Times, serif;
+  padding-top: 3px;}
+#masthead .desc
+{ font: italic 16px Georgia, "Times New Roman", Times, serif;
+  color: #000;
+  text-shadow: #2D3D52 0px 0px 16px;
+  letter-spacing: 1px;}
+#main
+{ background-color: #fff;
+  border-bottom: 6px solid #9fb0c6;
+  padding-top: 1.5em;
+  min-height: 450px;}
+#footer
+{ background-color: #000;}
+#footer a
+{ color: #6698cc;}
+/* @group Navigation */
+#navigation
+{ position: absolute;
+  bottom: 0px}
+#navigation ul
+{ margin: 0;
+  padding: 0;
+  list-style: none;}
+#navigation li
+{ float: left;
+  margin-right: 4px;
+  text-align: center;}
+#navigation a
+{ display: block;
+  background-color: #2D4159;
+  padding: 6px 8px;
+  text-decoration: none;
+  font-weight: bold;
+  color: #fff;
+  line: none;}
+#navigation a.current, 
+#navigation a:hover.current
+{ color: #000;
+  background-color: #D0E1F7;}
+#navigation a:hover
+{ background-color: #1051A3;}
+/* @end */
+/* @group Login */
+#loginForm
+{ margin-top: 0.5em;
+  color: #fff;
+  font-size: 1.2em;}
+#loginForm a
+{ color: #6698CC;}
+#loginForm span
+{ color: #D0E1F7;
+  font-style: italic;}
+#loginForm input
+{ width: 8em;
+  margin-right: 3px;
+  padding: 5px 7px;
+  border: none;
+  color: #ACACAC;
+  font-size: 120%;}
+#loginForm input.button
+{ width: auto;
+  background-color: #520013;
+  color: white;
+  cursor: pointer;}
+#loginForm input.button:hover
+{ background-color: #959595;}
+/* @end */
+/* @group Boxes */
+#logo
+{ color: #D0E1F7;
+  font: normal 24pt Verdana, "Lucida Grande", Lucida, sans-serif;
+  text-decoration: none;}
+#logo span
+{ color: #7D3A49;
+  ;
+  font-size: 36px;
+  font-weight: bold;}
+#errorBar
+{ text-align: center;
+  color: #E0E0E0;
+  font-size: 110%;}
+#errorBar a
+{ color: #6698cc;}
+#errorBar img
+{ vertical-align: text-bottom;}
+/*
+@end */
+/* @group Form */
+.zn_newthread input, .zn_newthread textarea
+{ width: 100%;
+  color: #191919;
+  font-size: 14px;}
+}
+.zn_newthread input, .zn_newthread label
+{ padding: 2px;}
+.zn_newthread input
+{ font-size: 2.5em;
+  color: #7F7F7F;}
+.zn_newthread label
+{ font-size: 1.6em;
+  color: #2D4159;}
+.zn_newthread input.button
+{ width: auto;
+  padding: auto;
+  font-size: 14px;
+  color: #000;}
+.zn_listing table th
+{ font: 1.5em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+  color: #2D4159;
+  text-decoration: underline;}
+.zn_listing table td
+{ font-size: 1.1em;}
+.zn_listing table td a
+{ display: block;
+  font-size: 1.3em;
+  text-decoration: none;
+  color: #202020;}
+.zn_listing table tr.odd td
+{ background-color: transparent;}
+.zn_listing table tr.even td
+{ background-color: #f3f5fb;}
+.zn_listing table tr:hover
+{ font-style: italic;}
+.zn_listing table tr:hover td
+{ background-color: #D0E1F7;}
+.zn_listing table tr:hover a
+{ padding: 10px;}
+.zn_listing .date
+{ color: #7D3A49;}
+.zn_listing .author
+{ color: #627160;}
+.zn_post
+{ padding: 4px;}
+.zn_post .info
+{ text-align: center;
+  font-size: 80%;
+  color: #627160;
+  font-weight: bold;}
+.zn_post .date
+{ margin: 0 0 1em 1em;
+  font-style: oblique;
+  color: #7D3A49;}
+.zn_post .message, .zn_newpost textarea
+{ color: #191919;
+  font-size: 14px;}
+.zn_newpost input.button
+{ font-size: 120%;}
+.zn_newpost textarea
+{ width: 95%;
+  height: 200px;
+  overflow: auto;}
+.zn_form input, .zn_form textarea, .zn_form .label, .zn_form label
+{ display: block;
+  width: 100%;
+  font-size: 1.3em;
+  padding: 2px;}
+.zn_form .label, .zn_form label
+{ text-align: right;
+  font-size: 1.1em;}
+.zn_form input.button
+{ display: inline;
+  width: auto;
+  height: auto;
+  font-size: 14px}
+.LV_invalid
+{ display: block;
+  color: #627160;
+  font-weight: bold;
+  font-style: italic;
+  font-size: 11px;
+  margin-bottom: 8px;
+  margin-left: 2px;}
+.LV_invalid:before
+{ color: #7D3A49;
+  font-weight: bold;
+  font-style: italic;
+  font-size: 11px;
+  content: "★ ";}
+
+/*
+@end */
