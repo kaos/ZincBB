@@ -1,0 +1,6 @@
+[submodule "lib/mochiweb"]
+	path = lib/mochiweb
+	url = git://github.com/TomMc/mochiweb_zincbb.git
+[submodule "lib/nitrogen"]
+	path = lib/nitrogen
+	url = git://github.com/TomMc/nitrogen.git
