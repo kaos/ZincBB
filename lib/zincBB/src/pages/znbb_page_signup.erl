@@ -88,8 +88,8 @@ event(create) ->
     [Username] = wf:q(username_field),
     [Password] = wf:q(password_field),
     [Email] = wf:q(email_field),
-    case znbb_account:create(iolist_to_binary(Username), iolist_to_binary(Password),
-			     iolist_to_binary(Email))
+    case znbb_account:create(znbb_utils:safe_bin(Username),
+			     znbb_utils:safe_bin(Password), znbb_utils:safe_bin(Email))
 	of
       {ok, _Account} -> wf:redirect("/");
       {error, Reason} -> errorbar:now(Reason)

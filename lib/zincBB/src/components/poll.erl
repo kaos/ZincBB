@@ -57,13 +57,10 @@ vote_form(P) ->
     Map = [choice@text, choice@value],
     Data = [[C, C] || C <- Choices],
     wf:wire(voteBtn, #event{type = click, delegate = ?MODULE, postback = vote}),
-    #panel{body =
-	       [#h3{text = P#poll.question},
-		#radiogroup{id = voteGroup,
-			    body =
-				[#bind{data = Data, map = Map,
-				       body = [#radio{id = choice}, #br{}]}]},
-		#br{}, #button{id = voteBtn, text = "Answer"}]}.
+    [#h3{text = P#poll.question},
+     #radiogroup{id = voteGroup,
+		 body = [#bind{data = Data, map = Map, body = [#radio{id = choice, html_encode=true}, #br{}]}]},
+     #br{}, #button{id = voteBtn, text = "Answer"}].
 
 chart(Width, Height, Question, Labels, Values) ->
     #google_chart{title = Question, type = pie3d, width = Width, height = Height,
@@ -88,17 +85,19 @@ event(build_poll) ->
 event(add_option) -> wf:insert_bottom(moreOptions, make_option());
 event(publish_poll) ->
     [Question] = wf:q(question),
-    Options = [O || O <- wf:q(option), O /= []],
+    Options = [znbb_utils:safe_bin(O) || O <- wf:q(option), O /= []],
     case Options of
       [] -> ok;
-      _Else -> Tid = wf:get_path_info(), znbb_thread:add_poll(Question, Options, Tid)
+      _Else ->
+	  Tid = wf:get_path_info(),
+	  znbb_thread:add_poll(znbb_utils:safe_bin(Question), Options, Tid)
     end;
 event(vote) ->
     case wf:q(voteGroup) of
       [Answer] ->
 	  Name = znbb_account:name(),
 	  Tid = wf:get_path_info(),
-	  znbb_thread:vote(Name, Answer, Tid);
+	  znbb_thread:vote(Name, znbb_utils:safe_bin(Answer), Tid);
       _Else -> ignore
     end;
 event({big_chart, Question, Labels, Values}) ->

@@ -23,7 +23,7 @@
 %%%
 -include("./lib/nitrogen/include/wf.inc").
 
--export([messages/0, now/1, next/1]).
+-export([messages/0, next/1, now/1]).
 
 messages() ->
     case wf:session(zincbb_flash) of

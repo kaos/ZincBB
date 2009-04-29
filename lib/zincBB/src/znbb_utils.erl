@@ -24,7 +24,7 @@
 
 -export([uuid/0]).
 
--export([date/1, hour/1, time_diff_now/1, timestamp/0]).
+-export([date/1, hour/1, safe_bin/1, time_diff_now/1, timestamp/0]).
 
 -define(MIN, 60).
 
@@ -90,3 +90,7 @@ month(9) -> "Sep";
 month(10) -> "Oct";
 month(11) -> "Nov";
 month(12) -> "Dec".
+
+safe_bin(Content) when is_list(Content) ->
+    wf_utils:js_escape(iolist_to_binary(Content));
+safe_bin(Content) -> wf_utils:js_escape(Content).

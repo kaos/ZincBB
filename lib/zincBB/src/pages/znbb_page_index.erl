@@ -81,8 +81,8 @@ event(create_thread) ->
     [Title] = wf:q(newThreadTitle),
     [Post] = wf:q(newThreadPost),
     Author = znbb_account:author(),
-    Tid = znbb_vault:create_thread(list_to_binary(Title), Author,
-				   list_to_binary(Post)),
+    Tid = znbb_vault:create_thread(znbb_utils:safe_bin(Title), Author,
+				   znbb_utils:safe_bin(Post)),
     wf:redirect(["/znbb/thread/", Tid]).
 
 % ==========================================================
