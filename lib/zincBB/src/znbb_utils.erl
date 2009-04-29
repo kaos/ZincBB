@@ -24,7 +24,7 @@
 
 -export([uuid/0]).
 
--export([date/1, hour/1, safe_bin/1, time_diff_now/1, timestamp/0]).
+-export([date/1, escape/1, hour/1, sanitize/1, time_diff_now/1, timestamp/0]).
 
 -define(MIN, 60).
 
@@ -91,6 +91,8 @@ month(10) -> "Oct";
 month(11) -> "Nov";
 month(12) -> "Dec".
 
-safe_bin(Content) when is_list(Content) ->
-    wf_utils:js_escape(iolist_to_binary(Content));
-safe_bin(Content) -> wf_utils:js_escape(Content).
+sanitize(Html) when is_binary(Html) -> sanitize(binary_to_list(Html));
+sanitize(Html) -> Sane = wf_convert:html_encode(Html), iolist_to_binary(Sane).
+
+escape(Html) when is_list(Html) -> escape(list_to_binary(Html));
+escape(Html) -> wf_utils:js_escape(Html).

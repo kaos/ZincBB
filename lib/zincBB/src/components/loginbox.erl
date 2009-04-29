@@ -58,8 +58,7 @@ draw_logged_in() ->
 event(login) ->
     [User] = wf:q(userLoginBox),
     [Pass] = wf:q(passwordLoginBox),
-    case znbb_account:authenticate(iolist_to_binary(User), iolist_to_binary(Pass))
-	of
+    case znbb_account:authenticate(list_to_binary(User), list_to_binary(Pass)) of
       {accepted, _Account} -> wf:redirect(wf_platform:get_raw_path());
       denied -> errorbar:now("Sorry, Incorrect Name/Password"), ok
     end;

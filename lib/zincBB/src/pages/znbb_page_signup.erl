@@ -88,8 +88,8 @@ event(create) ->
     [Username] = wf:q(username_field),
     [Password] = wf:q(password_field),
     [Email] = wf:q(email_field),
-    case znbb_account:create(znbb_utils:safe_bin(Username),
-			     znbb_utils:safe_bin(Password), znbb_utils:safe_bin(Email))
+    case znbb_account:create(znbb_utils:escape(Username),
+			     znbb_utils:escape(Password), znbb_utils:escape(Email))
 	of
       {ok, _Account} -> wf:redirect("/");
       {error, Reason} -> errorbar:now(Reason)

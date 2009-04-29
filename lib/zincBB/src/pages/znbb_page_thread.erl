@@ -83,6 +83,7 @@ sidebar() ->
 render_posts(Posts) -> [render_post(P, old) || P <- Posts].
 
 render_post(#post{author = {Name, Email}, created = C, message = M}, Type) ->
+    SaneM = znbb_utils:sanitize(M),
     [#panel{class = "zn_post span-17",
 	    body =
 		[#panel{class = "span-3 info", body = [avatar(Email), #br{}, Name]},
@@ -92,9 +93,9 @@ render_post(#post{author = {Name, Email}, created = C, message = M}, Type) ->
 				    body =
 					case Type of
 					  old -> znbb_utils:time_diff_now(C);
-					  new -> wf:to_list(znbb_utils:hour(C))
+					  new -> lists:flatten(znbb_utils:hour(C))
 					end},
-			     #panel{class = "message", body = M}]}]},
+			     #panel{class = "message", body = SaneM}]}]},
      #hr{}].
 
 % ==========================================================
@@ -106,7 +107,7 @@ event(new_post) ->
     [Post] = wf:q(new_post),
     Author = znbb_account:author(),
     wf:set(new_post, ""),
-    znbb_thread:add_post(Author, znbb_utils:safe_bin(Post), Tid).
+    znbb_thread:add_post(Author, znbb_utils:escape(Post), Tid).
 
 callback({post, P}) ->
     Latest = znbb_utils:date(P#post.created),
