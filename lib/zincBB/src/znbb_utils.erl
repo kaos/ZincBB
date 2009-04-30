@@ -91,8 +91,21 @@ month(10) -> "Oct";
 month(11) -> "Nov";
 month(12) -> "Dec".
 
-sanitize(Html) when is_binary(Html) -> sanitize(binary_to_list(Html));
-sanitize(Html) -> Sane = wf_convert:html_encode(Html), iolist_to_binary(Sane).
-
 escape(Html) when is_list(Html) -> escape(list_to_binary(Html));
 escape(Html) -> wf_utils:js_escape(Html).
+
+sanitize(Html) when is_binary(Html) -> sanitize(binary_to_list(Html));
+sanitize(Html) -> sanitize(Html, <<>>).
+
+sanitize([], BinAcc) -> BinAcc;
+sanitize([C | Rest], BinAcc) ->
+    Next = case C of
+	     $< -> <<"&lt;">>;
+	     $> -> <<"&gt;">>;
+	     $" -> <<"&quot;">>;
+	     $' -> <<"&#39;">>;
+	     $& -> <<"&amp;">>;
+	     $\n -> <<"<br\\>">>;
+	     X -> <<X>>
+	   end,
+    sanitize(Rest, <<BinAcc/binary, Next/binary>>).
