@@ -54,7 +54,7 @@ results(P, Width, Height) ->
 
 vote_form(P) ->
     Choices = lists:sort(dict:fetch_keys(P#poll.ballot)),
-    Data = [[C, C] || C <- Choices],
+    Data = [[C, wf:pickle(C)] || C <- Choices],
     Map = [choice@text, choice@value],
     wf:wire(voteBtn, #event{type = click, delegate = ?MODULE, postback = vote}),
     [#h3{text = P#poll.question, html_encode = true},
@@ -92,14 +92,14 @@ event(publish_poll) ->
       [] -> ok;
       _Else ->
 	  Tid = wf:get_path_info(),
-	  znbb_thread:add_poll(znbb_utils:escape(Question), Options, Tid)
+	  znbb_thread:add_poll(list_to_binary(Question), Options, Tid)
     end;
 event(vote) ->
     case wf:q(voteGroup) of
       [Answer] ->
 	  Name = znbb_account:name(),
 	  Tid = wf:get_path_info(),
-	  znbb_thread:vote(Name, znbb_utils:sanitize(Answer), Tid);
+	  znbb_thread:vote(Name, wf:depickle(Answer), Tid);
       _Else -> ignore
     end;
 event({big_chart, Question, Labels, Values}) ->
