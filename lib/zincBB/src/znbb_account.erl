@@ -48,9 +48,22 @@ author() ->
 
 guest_name() -> iolist_to_binary(["Guest@", client_ip()]).
 
+% Parts adapted from mochiweb_request.erl
 client_ip() ->
-    {ok, {{W, X, Y, Z}, _Port}} = wf_platform:get_peername(),
-    io_lib:format("~B.~B.~B.~B", [W, X, Y, Z]).
+    Socket = wf_platform:get_socket(),
+    case inet:peername(Socket) of
+      {ok, {Addr = {10, _, _, _}, _Port}} ->
+	  case wf_platform:get_header('x-forwarded-for') of
+	    undefined -> inet_parse:ntoa(Addr);
+	    Hosts -> string:strip(lists:last(string:tokens(Hosts, ",")))
+	  end;
+      {ok, {{127, 0, 0, 1}, _Port}} ->
+	  case wf_platform:get_header('x-forwarded-for') of
+	    undefined -> "127.0.0.1";
+	    Hosts -> string:strip(lists:last(string:tokens(Hosts, ",")))
+	  end;
+      {ok, {Addr, _Port}} -> inet_parse:ntoa(Addr)
+    end.
 
 create(Username, Password, Email) ->
     MD5Pass = crypto:md5(Password),
