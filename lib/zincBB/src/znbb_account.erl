@@ -53,12 +53,12 @@ client_ip() ->
     Socket = wf_platform:get_socket(),
     case inet:peername(Socket) of
       {ok, {Addr = {10, _, _, _}, _Port}} ->
-	  case wf_platform:get_header('x-forwarded-for') of
+	  case wf_platform:get_header('x_forwarded_for') of
 	    undefined -> inet_parse:ntoa(Addr);
 	    Hosts -> string:strip(lists:last(string:tokens(Hosts, ",")))
 	  end;
       {ok, {{127, 0, 0, 1}, _Port}} ->
-	  case wf_platform:get_header('x-forwarded-for') of
+	  case wf_platform:get_header('x_forwarded_for') of
 	    undefined -> "127.0.0.1";
 	    Hosts -> string:strip(lists:last(string:tokens(Hosts, ",")))
 	  end;
