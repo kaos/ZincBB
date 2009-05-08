@@ -22,7 +22,7 @@
 %
 %%%
 
--export([content/0, description/0, main/0, sidebar/0, subject/0, title/0]).
+-export([content/1, description/2, main/0, sidebar/1, subject/1, title/0]).
 
 -export([event/1]).
 
@@ -36,26 +36,23 @@ main() ->
     Tid = wf:get_path_info(),
     case znbb_thread:join(Agent, Account, Tid) of
       {welcome, Thread, Posts} ->
-	  put(thread, Thread), % yuck
-	  put(posts, Posts),   % ^^
-	  #template{file = "dual.html"};
+	  #template{file = "thread.html",
+		    bindings = [{'Thread', Thread}, {'Posts', Posts}]};
       _Else -> wf_comet2:dismiss(Agent), wf:redirect("/")
     end.
 
 title() -> "Zinc BB".
 
-subject() -> T = get(thread), ["Viewing: ", T#thread.title].
+subject(T) -> ["Viewing: ", T#thread.title].
 
-description() ->
-    #thread{author = {Name, _Email}} = get(thread),
-    [P | _] = get(posts),
-    Latest = znbb_utils:date(P#post.created),
+description(#thread{author = {Name, _Email}}, [LastPost | _]) ->
+    Latest = znbb_utils:date(LastPost#post.created),
     [#span{id = userCount, text = " "}, ".", #br{}, "It was created by ", Name,
      ", last updated on ", %todo: Found bug, text = " " is workaround
      #span{id = lastUpdate, text = Latest}, "."].
 
-content() ->
-    Posts = lists:reverse(get(posts)),
+content(DescPosts) ->
+    Posts = lists:reverse(DescPosts),
     LSpan = "span-5 center",
     RSpan = "span-12 last",
     NewPostForm = [#panel{class = LSpan,
@@ -68,8 +65,7 @@ content() ->
     [#panel{id = posts, body = render_posts(Posts)},
      #panel{class = "span-17 zn_newpost append-bottom", body = NewPostForm}].
 
-sidebar() ->
-    T = get(thread),
+sidebar(T) ->
     PollArea = case T#thread.poll of
 		 none ->
 		     wf:wire(pollBtn, #event{type = click, delegate = poll, postback = build_poll}),

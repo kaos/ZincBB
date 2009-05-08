@@ -104,7 +104,7 @@ event(vote) ->
     end;
 event({big_chart, Question, Labels, Values}) ->
     Chart = wf:render(chart(800, 350, Question, Labels, Values)),
-    wf:wire(#script{script = wf:f("modal_box(\"~s\")", [Chart])}).
+    wf:wire(#script{script = wf_emit:js("modal_box", [Chart])}).
 
 make_option() ->
     Del = wf:temp_id(),
