@@ -1,0 +1,68 @@
+#!/usr/bin/env escript
+%%! -sname zincBB -mnesia dir '"mnesia"'
+
+main(Args) -> setdir(), dispatch(Args).
+
+dispatch(["bootstrap"]) -> bootstrap();
+dispatch(["tidy"]) -> tidy();
+dispatch(["update"]) -> update();
+dispatch(_) -> io:format("Usage: ./zinc [bootstrap | update | tidy]~n", []).
+
+
+%=======================================================
+% Comands
+%=======================================================
+
+bootstrap() ->
+    shell("git submodule init"),
+    update(),
+    create_schema().
+
+
+tidy() ->
+    io:format("Tidying source code...", []),
+    erl_tidy:dir("./lib/zincBB/src", [
+	    {backups, false}, 
+	    {keep_unused, true},
+	    {paper, 100},
+	    {ribbon, 80},
+	    {quiet, true} ]),
+    io:format("Done.~n", []).
+    
+
+update() ->
+    shell("git pull git://github.com/TomMc/ZincBB.git master"),
+    shell("git submodule update"),
+    make:all().
+
+
+%=======================================================
+% Internal 
+%=======================================================
+
+setdir() ->
+    Dir = filename:dirname(?FILE),
+    file:set_cwd(Dir).
+
+
+create_schema() ->
+    mnesia:stop(),
+    filelib:ensure_dir("./mnesia"),
+    mnesia:create_schema([node()]),
+
+    ok = mnesia:start(),
+    true = code:add_path("./lib/zincBB/ebin"),
+    {module, M} = code:ensure_loaded(znbb_mnesia_db),
+    case M:create_tables() of 
+	{atomic, ok} -> ok;
+	{aborted, {already_exists, Table}} -> 
+	    io:format("Table ~p already exists~n", [Table])
+    end.
+
+
+shell(Cmd) ->
+    io:format("Zinc: => ~s~n", [Cmd]),
+    case os:cmd(Cmd) of
+	[] -> io:format("ok~n", []);
+	Resp -> io:format("~s~n", [Resp])
+    end.

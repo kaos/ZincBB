@@ -9,32 +9,41 @@ ZincBB is made available under the Apache 2.0 license.
 
 
 ======================================================================
-Setup
+Instructions
 ======================================================================
 
-After cloning the repository, dependent libraries must be fetched as
-git submodule repostories. 
+§ SETUP
 
-Dependencies:
-git submodule init
-git submodule update
+After cloning the repository, dependent libraries must be fetched, and
+an initial mnesia schema needs to be created. For your convenience the 
+"zinc" escript can perform these tasks for you. Type:
 
-Build: 
-make
+./zinc bootstrap
 
-Setup (sets up mnesia schema):
-./bootstrap
 
-Run:
+§ RUNNING 
+
 ./start
 
 
+§ UPDATING
+
+To pull the latest upstream changes, type:
+
+./zinc update
+
+
 ======================================================================
-Source Format
+Contributions
 ======================================================================
 
-The erl_tidy library is used to format the zincBB code used in this
-project. To apply the tidy, simply type:
+Code contributions be they bug fixes, performance enhancements, or 
+new feature additions are wholeheartedly welcome. The best way to share
+your changes is to fork the repository at http://github.com/TomMc/ZincBB/
 
-./zntools tidy
+To report issues, use github's built-in issue tracker at the above location.
+
+The erl_tidy library is used to format the code in this project. To apply type:
+
+./zinc tidy
 
