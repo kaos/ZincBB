@@ -1,12 +1,13 @@
 #!/usr/bin/env escript
-%%! -sname zincBB -mnesia dir '"mnesia"'
 
 main(Args) -> setdir(), dispatch(Args).
 
 dispatch(["bootstrap"]) -> bootstrap();
 dispatch(["tidy"]) -> tidy();
 dispatch(["update"]) -> update();
-dispatch(_) -> io:format("Usage: ./zinc [bootstrap | update | tidy]~n", []).
+dispatch(["make"]) -> make();
+dispatch(["clean"]) -> clean();
+dispatch(_) -> io:format("Usage: ./zinc [bootstrap | update | tidy | make | clean]~n", []).
 
 
 %=======================================================
@@ -33,7 +34,15 @@ tidy() ->
 update() ->
     shell("git pull git://github.com/TomMc/ZincBB.git master"),
     shell("git submodule update"),
+    make().
+
+
+make() ->
     make:all().
+
+
+clean() ->
+    [file:delete(F) || F <- filelib:wildcard("lib/*/ebin/*.beam")].
 
 
 %=======================================================
@@ -46,8 +55,11 @@ setdir() ->
 
 
 create_schema() ->
-    mnesia:stop(),
     filelib:ensure_dir("./mnesia"),
+    application:set_env(mnesia, dir, "./mnesia"),
+    {ok, _} = net_kernel:start([zincBB, shortnames]),
+    
+    mnesia:stop(),
     mnesia:create_schema([node()]),
 
     ok = mnesia:start(),
