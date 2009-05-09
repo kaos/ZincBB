@@ -53,10 +53,8 @@ clean(_) ->
 %=======================================================
 
 setdir() ->
-    % Not supported until R13
-    %Dir = filename:dirname(?FILE),
-    %file:set_cwd(Dir).
-    ok.
+    Dir = filename:dirname(escript:script_name()),
+    file:set_cwd(Dir).
 
 
 create_schema() ->
