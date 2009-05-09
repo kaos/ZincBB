@@ -53,8 +53,10 @@ clean(_) ->
 %=======================================================
 
 setdir() ->
-    Dir = filename:dirname(?FILE),
-    file:set_cwd(Dir).
+    % Not supported until R13
+    %Dir = filename:dirname(?FILE),
+    %file:set_cwd(Dir).
+    ok.
 
 
 create_schema() ->
