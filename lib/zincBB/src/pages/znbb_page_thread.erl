@@ -102,7 +102,7 @@ event(new_post) ->
     [Post] = wf:q(new_post),
     Author = znbb_account:author(),
     wf:set(new_post, ""),
-    znbb_thread:add_post(Author, znbb_utils:sanitize(Post), Tid).
+    znbb_thread:add_post(Author, Post, Tid).
 
 callback({post, P}) ->
     Latest = znbb_utils:date(P#post.created),

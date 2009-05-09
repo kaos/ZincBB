@@ -45,7 +45,7 @@ read_thread(Tid) -> (?DB_ENGINE):read_thread(Tid).
 
 persist_thread(Thread) -> (?DB_ENGINE):persist_thread(Thread).
 
-create_post(Tid, Author, Message) ->
+create_post(Author, Message, Tid) ->
     Now = znbb_utils:timestamp(),
     PostId = znbb_utils:uuid(),
     Post = #post{postid = PostId, tid = Tid, author = Author, message = Message,

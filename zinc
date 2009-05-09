@@ -6,8 +6,9 @@ dispatch(["bootstrap"]) -> bootstrap();
 dispatch(["tidy"]) -> tidy();
 dispatch(["update"]) -> update();
 dispatch(["make"]) -> make();
-dispatch(["clean"]) -> clean();
-dispatch(_) -> io:format("Usage: ./zinc [bootstrap | update | tidy | make | clean]~n", []).
+dispatch(["clean"|All]) -> clean(All);
+dispatch(_) -> 
+    io:format("Usage: ./zinc [bootstrap | update | tidy | make | clean [all]]~n", []).
 
 
 %=======================================================
@@ -41,8 +42,10 @@ make() ->
     make:all().
 
 
-clean() ->
-    [file:delete(F) || F <- filelib:wildcard("lib/*/ebin/*.beam")].
+clean(["all"]) ->
+    [file:delete(F) || F <- filelib:wildcard("./lib/*/ebin/*.beam")];
+clean(_) ->
+    [file:delete(F) || F <- filelib:wildcard("./lib/zincBB/ebin/*.beam")].
 
 
 %=======================================================
@@ -66,10 +69,12 @@ create_schema() ->
     true = code:add_path("./lib/zincBB/ebin"),
     {module, M} = code:ensure_loaded(znbb_mnesia_db),
     case M:create_tables() of 
-	{atomic, ok} -> ok;
+	{atomic, ok} -> 
+	    io:format("Schema created.~n", []);
 	{aborted, {already_exists, Table}} -> 
 	    io:format("Table ~p already exists~n", [Table])
-    end.
+    end,
+    mnesia:stop().
 
 
 shell(Cmd) ->

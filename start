@@ -17,11 +17,12 @@ ln -s ${PWD}/lib/nitrogen/www ./wwwroot/nitrogen
 
 echo "Starting ZincBB (Standalone)"
 
-exec erl +K true -smp enable		    \
--sname ${node}				    \
--mnesia dir ${mnesia_dir}		    \
--pa ${PWD}/lib/*/ebin			    \
--boot start_sasl -s reloader		    \
--eval "application:start(crypto)"	    \
+exec erl +K true -smp enable                \
+-sname ${node}                              \
+-mnesia dir ${mnesia_dir}                   \
+-mnesia dump_log_write_threshold 5000       \
+-pa ${PWD}/lib/*/ebin                       \
+-boot start_sasl -s reloader                \
+-eval "application:start(crypto)"           \
 -eval "application:start(znbb)"
 

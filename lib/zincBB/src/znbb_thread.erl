@@ -45,14 +45,16 @@
 % Grabs the latest posts, and joins the user to the thread
 join(UserPid, Account, Tid) -> send_call({join, UserPid, Account}, Tid).
 
-add_post(Name, Post, Tid) -> send_cast({add_post, Name, Post}, Tid).
+add_post(Author, Post, Tid) ->
+    SPost = znbb_utils:sanitize(Post),
+    gen_server:cast({global, Tid}, {add_post, Author, SPost}).
 
 add_poll(Question, Options, Tid) ->
-    send_cast({add_poll, Question, Options}, Tid).
+    gen_server:cast({global, Tid}, {add_poll, Question, Options}).
 
-vote(Name, Answer, Tid) -> send_cast({vote, Name, Answer}, Tid).
+vote(Name, Answer, Tid) -> gen_server:cast({global, Tid}, {vote, Name, Answer}).
 
-shutdown(Tid) -> send_cast(stop, Tid).
+shutdown(Tid) -> gen_server:cast({global, Tid}, stop).
 
 %%--------------------------------------------------------------------
 %%% Helpers
@@ -63,15 +65,6 @@ send_call(Cmd, Tid) ->
       exit:{noproc, _} ->
 	  case create(Tid) of
 	    {ok, Pid} -> gen_server:call(Pid, Cmd);
-	    _ -> {error, bad_thread}
-	  end
-    end.
-
-send_cast(Cmd, Tid) ->
-    try gen_server:cast({global, Tid}, Cmd) catch
-      exit:{noproc, _} ->
-	  case create(Tid) of
-	    {ok, Pid} -> gen_server:cast(Pid, Cmd);
 	    _ -> {error, bad_thread}
 	  end
     end.
@@ -126,7 +119,7 @@ handle_call(_Request, _From, State) ->
 %%--------------------------------------------------------------------
 handle_cast({add_post, Author, Message}, S) ->
     #state{thread = T, users = US, posts = PS} = S,
-    Post = znbb_vault:create_post(T#thread.tid, Author, Message),
+    Post = znbb_vault:create_post(Author, Message, T#thread.tid),
     broadcast_message({post, Post}, US),
     S2 = S#state{posts = [Post | PS]},
     {noreply, S2};

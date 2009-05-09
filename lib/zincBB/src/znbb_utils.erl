@@ -94,18 +94,14 @@ month(12) -> "Dec".
 escape(Html) when is_list(Html) -> escape(list_to_binary(Html));
 escape(Html) -> wf_utils:js_escape(Html).
 
-sanitize(Html) when is_binary(Html) -> sanitize(binary_to_list(Html));
+sanitize(Html) when is_list(Html) -> sanitize(list_to_binary(Html));
 sanitize(Html) -> sanitize(Html, <<>>).
 
-sanitize([], BinAcc) -> BinAcc;
-sanitize([C | Rest], BinAcc) ->
-    Next = case C of
-	     $< -> <<"&lt;">>;
-	     $> -> <<"&gt;">>;
-	     $" -> <<"&quot;">>;
-	     $' -> <<"&#39;">>;
-	     $& -> <<"&amp;">>;
-	     $\n -> <<"<br\\>">>;
-	     X -> <<X>>
-	   end,
-    sanitize(Rest, <<BinAcc/binary, Next/binary>>).
+sanitize(<<>>, Acc) -> Acc;
+sanitize(<<$<, Rest/binary>>, Acc) -> sanitize(Rest, <<Acc/binary, "&lt;">>);
+sanitize(<<$>, Rest/binary>>, Acc) -> sanitize(Rest, <<Acc/binary, "&gt;">>);
+sanitize(<<$", Rest/binary>>, Acc) -> sanitize(Rest, <<Acc/binary, "&quot;">>);
+sanitize(<<$', Rest/binary>>, Acc) -> sanitize(Rest, <<Acc/binary, "&#39;">>);
+sanitize(<<$&, Rest/binary>>, Acc) -> sanitize(Rest, <<Acc/binary, "&amp;">>);
+sanitize(<<$\n, Rest/binary>>, Acc) -> sanitize(Rest, <<Acc/binary, "<br />">>);
+sanitize(<<C, Rest/binary>>, Acc) -> sanitize(Rest, <<Acc/binary, C>>).
