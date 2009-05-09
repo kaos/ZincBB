@@ -31,7 +31,9 @@
 
 threads() -> (?DB_ENGINE):get_thread_listing().
 
-create_thread(Title, Author, Message) ->
+create_thread(T, Author, M) ->
+    Title = znbb_utils:sanitize(T),
+    Message = znbb_utils:sanitize(M),
     Now = znbb_utils:timestamp(),
     Tid = znbb_utils:uuid(),
     PostId = znbb_utils:uuid(),
@@ -39,6 +41,7 @@ create_thread(Title, Author, Message) ->
 		 created = Now},
     Thread = #thread{tid = Tid, title = Title, author = Author, created = Now},
     ok = (?DB_ENGINE):new_thread(Thread, Post),
+    znbb_thread:create(Tid),
     Tid.
 
 read_thread(Tid) -> (?DB_ENGINE):read_thread(Tid).

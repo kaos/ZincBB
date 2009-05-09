@@ -22,7 +22,7 @@
 %
 
 %% API
--export([add_poll/3, add_post/3, join/3, shutdown/1, vote/3]).
+-export([add_poll/3, add_post/3, create/1, join/3, shutdown/1, vote/3]).
 
 %% gen_server callbacks
 -export([code_change/3, handle_call/3, handle_cast/2, handle_info/2, init/1,
@@ -45,20 +45,18 @@
 % Grabs the latest posts, and joins the user to the thread
 join(UserPid, Account, Tid) -> send_call({join, UserPid, Account}, Tid).
 
-add_post(Author, Post, Tid) ->
-    SPost = znbb_utils:sanitize(Post),
-    gen_server:cast({global, Tid}, {add_post, Author, SPost}).
+add_post(Author, Message, Tid) ->
+    SMessage = znbb_utils:sanitize(Message),
+    gen_server:cast({global, Tid}, {add_post, Author, SMessage}).
 
 add_poll(Question, Options, Tid) ->
     gen_server:cast({global, Tid}, {add_poll, Question, Options}).
 
 vote(Name, Answer, Tid) -> gen_server:cast({global, Tid}, {vote, Name, Answer}).
 
-shutdown(Tid) -> gen_server:cast({global, Tid}, stop).
+create(Tid) -> gen_server:start({global, Tid}, ?MODULE, [Tid], []).
 
-%%--------------------------------------------------------------------
-%%% Helpers
-%%--------------------------------------------------------------------
+shutdown(Tid) -> gen_server:cast({global, Tid}, stop).
 
 send_call(Cmd, Tid) ->
     try gen_server:call({global, Tid}, Cmd) catch
@@ -68,8 +66,6 @@ send_call(Cmd, Tid) ->
 	    _ -> {error, bad_thread}
 	  end
     end.
-
-create(Tid) -> gen_server:start({global, Tid}, ?MODULE, [Tid], []).
 
 %%====================================================================
 %% gen_server callbacks

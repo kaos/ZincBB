@@ -1,0 +1,10 @@
+Any files placed in this directory with a .txt extension, will be used
+to construct a "corpus" (body of text).  The corpus is then used as
+the source for random postings. See: populate.erl
+
+A great place to get text data is from:
+
+http://www.gutenberg.org/wiki/Main_Page
+
+
+Note: Use only us-ascii plain text.
