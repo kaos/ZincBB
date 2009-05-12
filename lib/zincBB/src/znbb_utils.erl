@@ -38,24 +38,24 @@ timestamp() ->
 time_diff_now(Then) ->
     Now = timestamp(),
     case Now - Then of
-      Diff when Diff < (?WEEK) -> time_diff(Diff);
+      Diff when Diff < ?WEEK -> time_diff(Diff);
       _Else -> date(Then)
     end.
 
 time_diff(Diff) when Diff < 10 -> "A few seconds ago";
-time_diff(Diff) when Diff < (?MIN) -> [integer_to_list(Diff), " seconds ago"];
-time_diff(Diff) when Diff < (?HOUR) ->
-    case trunc(Diff / (?MIN)) of
+time_diff(Diff) when Diff < ?MIN -> [integer_to_list(Diff), " seconds ago"];
+time_diff(Diff) when Diff < ?HOUR ->
+    case Diff div ?MIN of
       1 -> "About one minute ago";
       M -> [integer_to_list(M), " minutes ago"]
     end;
-time_diff(Diff) when Diff < (?DAY) ->
-    case trunc(Diff / (?HOUR)) of
+time_diff(Diff) when Diff < ?DAY ->
+    case Diff div ?HOUR of
       1 -> "An hour ago";
       H -> [integer_to_list(H), " hours ago"]
     end;
 time_diff(Diff) ->
-    case trunc(Diff / (?DAY)) of
+    case Diff div ?DAY of 
       1 -> "Yesterday";
       D -> [integer_to_list(D), " days ago"]
     end.

@@ -34,7 +34,7 @@ start(N) ->
       _ -> ok
     end,
     Corpus = corpus(),
-    SegLen = trunc(length(Corpus) / N),
+    SegLen = length(Corpus) div N,
     spawn_creators(N, Corpus, SegLen).
 
 start_name_server(Names) ->

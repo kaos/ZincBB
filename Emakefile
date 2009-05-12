@@ -34,6 +34,14 @@
     ]}.
 
 
+% === Make Erlodex (search engine ) =====================
+
+{ "./lib/erlodex/src/*", [
+	{outdir, "./lib/erlodex/ebin" },
+	debug_info
+    ]}.
+
+
 % === Mochiweb ==========================================
 
 { "./lib/mochiweb/src/*", [
