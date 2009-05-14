@@ -1,5 +1,7 @@
 -module(erlodex_index).
 
+-export([search/2, create/1]).
+
 -compile(export_all).
 
 
@@ -14,11 +16,6 @@
 -define(WORD, 16/unsigned-native-integer).
 -define(DWORD, 32/unsigned-native-integer).
 
-
-testsearch(Key) ->
-    Pairs = lists:usort(testwords()),
-    IndexDB = writeindex(Pairs),
-    search(Key, IndexDB).
 
 
 % =====================================================================
@@ -67,16 +64,19 @@ fetch_prefix({SymTbl, Dict} = Index, Pos, PreLen) ->
 % Index Creation
 % =====================================================================
 
-writeindex(Terms) ->
-    {SymTbl, Dict} = writeindex(Terms, [], {<<>>, <<>>}),
+create([]) ->
+    {0, {<<>>, <<>>}};
+create(Terms) ->
+    {SymTbl, Dict} = create(Terms, [], {<<>>, <<>>}),
     Max = byte_size(Dict) - ?ENTRY_SZ,
     {Max, {SymTbl, Dict}}.
 
-writeindex([], _, Index) -> Index;
-writeindex([{Term, _Postings} | Rest], Base, Index) ->
+create([], _, Index) -> 
+    Index;
+create([{Term, _Postings} | Rest], Base, Index) ->
     {Type, Symbol, Base2} = frontcompress(Term, Base),
     Index2 = insertentry(Type, Symbol, Index),
-    writeindex(Rest, Base2, Index2).
+    create(Rest, Base2, Index2).
 
 frontcompress(Term, Base) ->
     case prefixlen(Term, Base, 0) of
@@ -101,9 +101,65 @@ insertentry(Type, Symbol, {SymTbl, Dict}) ->
     Dict2 = <<Dict/binary, Entry/binary>>,
     {SymTbl2, Dict2}.
 
-testwords() ->
-    [{"cable", 25}, {"cat", 30}, {"car", 40}, {"cary", 1}, {"anchor", 1},
-     {"anchovie", 5}, {"killer", 19}, {"carton", 20}, {"abracadabra", 31},
-     {"animate", 41}, {"killings", 42}, {"killers", 43}, {"auto", 50},
-     {"automate", 60}].
+
+% =====================================================================
+% Postings Compression
+% =====================================================================
+
+compress_postings(Postings) ->
+    Gaps = gap_sequence(Postings),
+    vbencode_stream(Gaps).
+
+decompress_postings(Postings) ->
+    Gaps = vbdecode_stream(Postings),
+    ungap_sequence(Gaps).
+    
+gap_sequence([H|Tail]) ->
+    [H | gap_sequence(Tail, H)].
+gap_sequence([], _) -> [];
+gap_sequence([H|Tail], Last) ->
+    [H - Last | gap_sequence(Tail, H)].
+
+
+ungap_sequence([H|Tail]) ->
+    [H | ungap_sequence(Tail, H)].
+ungap_sequence([], _) -> [];
+ungap_sequence([H|Tail], Last) ->
+    Num = H + Last,
+    [Num | ungap_sequence(Tail, Num)].
+
+
+
+vbencode_stream(ByteStream) ->
+    list_to_binary([vbencode(B) || B <- ByteStream]).
+
+vbencode(N) when N < 128 ->
+    [(N rem 128) + 128];
+vbencode(N) ->
+    Bytes = [(N rem 128) + 128],
+    N2 = N div 128,
+    vbencode1(N2, Bytes).
+
+vbencode1(N, Bytes) when N < 128 ->
+    [N rem 128 | Bytes];
+vbencode1(N, Bytes) ->
+    Bytes2 = [N rem 128 | Bytes],
+    N2 = N div 128,
+    vbencode1(N2, Bytes2).
+
+
+vbdecode_stream(ByteStream) ->
+    vbdecode(ByteStream, 0, []).
+
+vbdecode(<<>>, _N, Numbers) -> 
+    lists:reverse(Numbers);
+vbdecode(<<Byte/integer, Rest/binary>>, N, Numbers) when Byte < 128 ->
+    vbdecode(Rest, N * 128 + Byte, Numbers);
+vbdecode(<<Byte/integer, Rest/binary>>, N, Numbers) ->
+    Num = N * 128 + (Byte - 128),
+    vbdecode(Rest, 0, [Num | Numbers]).
+
+
+
+
 
