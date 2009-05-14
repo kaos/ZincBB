@@ -32,6 +32,10 @@
 % Application API
 % ==========================================================
 
-start(_Type, _Args) -> (?DB_ENGINE):init(), nitrogen:start(znbb).
+start(_Type, _Args) -> 
+    ?DB_ENGINE:init(), 
+    nitrogen:start(znbb),
+    znbb_sup:start_link().
+
 
 stop(_State) -> nitrogen:stop().

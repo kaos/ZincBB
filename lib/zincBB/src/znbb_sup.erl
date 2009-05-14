@@ -25,23 +25,19 @@
 
 -export([init/1, start_link/0]).
 
-start_link() -> ok.
 
-    %supervisor:start_link(?MODULE, []).
+start_link() ->
+    supervisor:start_link(?MODULE, []).
 
-init(_Args) -> ignore.
 
-    %{ok, {{one_for_one, 3,  60}, [
-
-                %{znbb_vault,
-
-                    %{znbb_vault, start_link, []},
-		    %permanent,
-		    %5,
-		    %worker,
-		    %[znbb_vault] }
-
-            %] }
-
-    %}.
+init(_Args) ->
+    {ok, {{one_for_one, 3,  60}, [
+		{znbb_distid,
+		    {znbb_distid, start_link, []},
+		    permanent,
+		    5,
+		    worker,
+		    [znbb_distid] }
+	    ]}
+    }.
 

@@ -22,8 +22,6 @@
 %
 %%%
 
--export([uuid/0]).
-
 -export([date/1, escape/1, hour/1, sanitize/1, time_diff_now/1, timestamp/0]).
 
 -define(MIN, 60).
@@ -33,12 +31,6 @@
 -define(DAY, 86400).
 
 -define(WEEK, 604800).
-
-% TODO: Verify this is 'random' enough.
-uuid() ->
-    <<I:160/integer>> = crypto:sha(term_to_binary({make_ref(), now()})),
-    StrId = erlang:integer_to_list(I, 16),
-    list_to_binary(StrId).
 
 timestamp() ->
     Now = calendar:universal_time(), calendar:datetime_to_gregorian_seconds(Now).

@@ -82,7 +82,8 @@ event(create_thread) ->
     [Post] = wf:q(newThreadPost),
     Author = znbb_account:author(),
     Tid = znbb_vault:create_thread(Title, Author, Post),
-    wf:redirect(["/znbb/thread/", Tid]).
+    HexId = erlang:integer_to_list(Tid, 16),
+    wf:redirect(["/znbb/thread/", HexId]).
 
 % ==========================================================
 % Internal
@@ -104,11 +105,12 @@ threads(Data) ->
 					 #tablecell{id = date, class = "date"}]}}]}.
 
 trans_threads({Tid, Title, {Name, _Email} = _Author, Created}, even) ->
-    Link = <<"/znbb/thread/", Tid/binary>>,
+    HexId = erlang:integer_to_list(Tid, 16),
+    Link = "/znbb/thread/" ++ HexId,
     When = znbb_utils:time_diff_now(Created),
     {["even", Title, Link, Name, When], odd, []};
-trans_threads({Tid, Title, {Name, _Email} = _Author, Created}, Acc)
-    when Acc == []; Acc == odd ->
-    Link = <<"/znbb/thread/", Tid/binary>>,
+trans_threads({Tid, Title, {Name, _Email} = _Author, Created}, Acc) when Acc == []; Acc == odd ->
+    HexId = erlang:integer_to_list(Tid, 16),
+    Link = "/znbb/thread/" ++ HexId,
     When = znbb_utils:time_diff_now(Created),
     {["odd", Title, Link, Name, When], even, []}.

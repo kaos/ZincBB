@@ -73,9 +73,12 @@ route(Path) ->
 	  route(Mod, Info);
       _Else -> {znbb_page_index, ""}
     end.
-
-route(znbb_page_thread, [Tid]) ->
-    BTid = list_to_binary(Tid), {znbb_page_thread, BTid};
+route(znbb_page_thread, [HexId]) ->
+    try erlang:list_to_integer(HexId, 16) of
+	Tid -> {znbb_page_thread, Tid}
+    catch
+	_:_ -> {znbb_page_index, ""}
+    end;
 route(Module, Info) -> {Module, Info}.
 
 %% request/1 is executed before every Nitrogen page, and lets

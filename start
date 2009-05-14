@@ -3,8 +3,6 @@
 ### Config Params ###############################
 
 node="zincBB"
-mnesia_dir="mnesia"
-
 
 ### Setup ######################################
 
@@ -19,10 +17,8 @@ echo "Starting ZincBB (Standalone)"
 
 exec erl +K true -smp enable                \
 -sname ${node}                              \
--mnesia dir ${mnesia_dir}                   \
--mnesia dump_log_write_threshold 5000       \
 -pa ${PWD}/lib/*/ebin                       \
--boot start_sasl -s reloader                \
+-boot start_sasl -s reloader -config sys    \
 -eval "application:start(crypto)"           \
 -eval "application:start(znbb)"
 

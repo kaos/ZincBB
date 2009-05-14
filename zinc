@@ -3,12 +3,11 @@
 main(Args) -> setdir(), dispatch(Args).
 
 dispatch(["bootstrap"]) -> bootstrap();
-dispatch(["tidy"]) -> tidy();
 dispatch(["update"]) -> update();
 dispatch(["make"]) -> make();
 dispatch(["clean"|All]) -> clean(All);
 dispatch(_) -> 
-    io:format("Usage: ./zinc [bootstrap | update | tidy | make | clean [all]]~n", []).
+    io:format("Usage: ./zinc [bootstrap | update | make | clean [all]]~n", []).
 
 
 %=======================================================
@@ -20,17 +19,6 @@ bootstrap() ->
     update(),
     create_schema().
 
-
-tidy() ->
-    io:format("Tidying source code...", []),
-    erl_tidy:dir("./lib/zincBB/src", [
-	    {backups, false}, 
-	    {keep_unused, true},
-	    {paper, 100},
-	    {ribbon, 80},
-	    {quiet, true} ]),
-    io:format("Done.~n", []).
-    
 
 update() ->
     shell("git pull git://github.com/TomMc/ZincBB.git master"),
@@ -69,10 +57,10 @@ create_schema() ->
     true = code:add_path("./lib/zincBB/ebin"),
     {module, M} = code:ensure_loaded(znbb_mnesia_db),
     case M:create_tables() of 
-	{atomic, ok} -> 
-	    io:format("Schema created.~n", []);
-	{aborted, {already_exists, Table}} -> 
-	    io:format("Table ~p already exists~n", [Table])
+        {atomic, ok} -> 
+            io:format("Schema created.~n", []);
+        {aborted, {already_exists, Table}} -> 
+            io:format("Table ~p already exists~n", [Table])
     end,
     mnesia:stop().
 
@@ -80,6 +68,6 @@ create_schema() ->
 shell(Cmd) ->
     io:format("Zinc: => ~s~n", [Cmd]),
     case os:cmd(Cmd) of
-	[] -> io:format("ok~n", []);
-	Resp -> io:format("~s~n", [Resp])
+        [] -> io:format("ok~n", []);
+        Resp -> io:format("~s~n", [Resp])
     end.

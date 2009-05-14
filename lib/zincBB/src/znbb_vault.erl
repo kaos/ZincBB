@@ -35,8 +35,8 @@ create_thread(T, Author, M) ->
     Title = znbb_utils:sanitize(T),
     Message = znbb_utils:sanitize(M),
     Now = znbb_utils:timestamp(),
-    Tid = znbb_utils:uuid(),
-    PostId = znbb_utils:uuid(),
+    Tid = znbb_distid:get(),
+    PostId = znbb_distid:get(),
     Post = #post{postid = PostId, tid = Tid, author = Author, message = Message,
 		 created = Now},
     Thread = #thread{tid = Tid, title = Title, author = Author, created = Now},
@@ -50,7 +50,7 @@ persist_thread(Thread) -> (?DB_ENGINE):persist_thread(Thread).
 
 create_post(Author, Message, Tid) ->
     Now = znbb_utils:timestamp(),
-    PostId = znbb_utils:uuid(),
+    PostId = znbb_distid:get(),
     Post = #post{postid = PostId, tid = Tid, author = Author, message = Message,
 		 created = Now},
     ok = (?DB_ENGINE):write_post(Post),
