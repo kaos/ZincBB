@@ -39,9 +39,11 @@
 %% Function: start_link() -> {ok,Pid} | ignore | {error,Error}
 %% Description: Starts the server
 %%--------------------------------------------------------------------
-start_link() -> gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
+start_link() -> 
+    gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
 
-new_index(IndexDB) -> gen_server:cast(?MODULE, {new_index, IndexDB}).
+new_index(IndexDB) -> 
+    gen_server:cast(?MODULE, {new_index, IndexDB}).
 
 %%====================================================================
 %% gen_server callbacks
@@ -71,7 +73,9 @@ init([]) ->
 %%                                      {stop, Reason, State}
 %% Description: Handling call messages
 %%--------------------------------------------------------------------
-handle_call(_Request, _From, State) -> Reply = ok, {reply, Reply, State}.
+handle_call(_Request, _From, State) -> 
+    Reply = ok, 
+    {reply, Reply, State}.
 
 %%--------------------------------------------------------------------
 %% Function: handle_cast(Msg, State) -> {noreply, State} |
@@ -81,6 +85,7 @@ handle_call(_Request, _From, State) -> Reply = ok, {reply, Reply, State}.
 %%--------------------------------------------------------------------
 handle_cast({new_index, IndexDB}, State) ->
     save_index(IndexDB), {noreply, State#state{index = State}};
+
 handle_cast(_Msg, State) -> {noreply, State}.
 
 %%--------------------------------------------------------------------
@@ -89,7 +94,8 @@ handle_cast(_Msg, State) -> {noreply, State}.
 %%                                       {stop, Reason, State}
 %% Description: Handling all non call/cast messages
 %%--------------------------------------------------------------------
-handle_info(_Info, State) -> {noreply, State}.
+handle_info(_Info, State) -> 
+    {noreply, State}.
 
 %%--------------------------------------------------------------------
 %% Function: terminate(Reason, State) -> void()
@@ -98,13 +104,15 @@ handle_info(_Info, State) -> {noreply, State}.
 %% cleaning up. When it returns, the gen_server terminates with Reason.
 %% The return value is ignored.
 %%--------------------------------------------------------------------
-terminate(_Reason, _State) -> ok.
+terminate(_Reason, _State) -> 
+    ok.
 
 %%--------------------------------------------------------------------
 %% Func: code_change(OldVsn, State, Extra) -> {ok, NewState}
 %% Description: Convert process state when code is changed
 %%--------------------------------------------------------------------
-code_change(_OldVsn, State, _Extra) -> {ok, State}.
+code_change(_OldVsn, State, _Extra) -> 
+    {ok, State}.
 
 save_index(IndexDB) ->
     {ok, Dir} = application:get_env(index_dir),
